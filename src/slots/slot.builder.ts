@@ -5,9 +5,14 @@ import { Dayjs } from 'dayjs';
 
 @Injectable()
 export class SlotBuilder {
-    SERVICE_KEY = 'sPWOL4v2MOAE7sUq055%2BwdPT7voiyC2O97JQXNOnraKoP1hYApVuDOdnqZo9Q%2Bvz7olpXweaxcfSUJW1euhSGA%3D%3D'
+    SERVICE_KEY = process.env.SERVICE_KEY;
     headers = {'Content-Type': 'application/json; charset=utf-8'}
-    url = 'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo'
+    URL= process.env.SERVICE_URL;
+    queryParams = {
+        ServiceKey: this.SERVICE_KEY,
+        solYear: 2023,
+        solMonth: 10
+    }
     private nextMonth: Dayjs;
     private today: Dayjs;
 
@@ -15,6 +20,7 @@ export class SlotBuilder {
         this.today = today;
         this.nextMonth = nextMonth;
     }
+
 
     private dateFormat(date) {
         let formatted = date.getFullYear() +
@@ -28,8 +34,7 @@ export class SlotBuilder {
         const publicList:String[] = [];
 
         try {
-            // const response = await axios.get(this.url, { params: queryParams, headers: this.headers });
-            const url = `http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?ServiceKey=sPWOL4v2MOAE7sUq055%2BwdPT7voiyC2O97JQXNOnraKoP1hYApVuDOdnqZo9Q%2Bvz7olpXweaxcfSUJW1euhSGA%3D%3D&solYear=${year}&solMonth=${month+1}`
+            const url = `${this.URL}?ServiceKey=${this.SERVICE_KEY}&solYear=${year}&solMonth=${month+1}`
             const response = await axios.get(url)
             // console.log(response.data)
             const count = response.data.response.body.totalCount;
